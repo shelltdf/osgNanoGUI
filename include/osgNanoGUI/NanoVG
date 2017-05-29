@@ -1,0 +1,61 @@
+#ifndef OSGNANOGUI_NANOVG_H
+#define OSGNANOGUI_NANOVG_H
+
+#include <osgNanoGUI/Export>
+
+#include <osg/Drawable>
+//#include <osg/StateSet>
+//#include <osg/StateAttribute>
+//#include <osg/Drawable>
+
+extern "C"
+{
+#include "nanovg.h"
+#ifdef OSG_GL3_AVAILABLE
+#define NANOVG_GL2_IMPLEMENTATION
+#elif defined OSG_GL2_AVAILABLE
+#define NANOVG_GL2_IMPLEMENTATION
+#elif defined OSG_GLES2_AVAILABLE
+#define NANOVG_GLES2_IMPLEMENTATION
+#elif defined OSG_GLES3_AVAILABLE
+#define NANOVG_GLES3_IMPLEMENTATION
+#endif
+#include "nanovg_gl.h"
+}
+
+//class NVGcontext;
+typedef struct NVGcontext NVGcontext;
+
+//
+class OSGNANOGUI_EXPORT NanoVGDrawCallback
+    :public osg::Drawable::DrawCallback
+{
+public:
+    NanoVGDrawCallback() {}
+    virtual ~NanoVGDrawCallback();
+
+    virtual bool init(NVGcontext* vg) = 0;
+    virtual void draw(NVGcontext* vg, int width, int height) = 0;
+
+    void drawImplementation(osg::RenderInfo& renderInfo, const osg::Drawable* drawable) const override;
+
+    void resize(int w, int h)
+    {
+        windowWidth = w;
+        windowHeight = h;
+    }
+
+private:
+
+    NVGcontext* vg = NULL;
+
+    int windowWidth = 1280;
+    int windowHeight = 720;
+
+    bool inited = false;
+
+};
+
+
+#endif//OSGNANOGUI_NANOVG_H
+

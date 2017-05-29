@@ -1,0 +1,110 @@
+#ifndef OSGNANOGUI_NANOGUI_H
+#define OSGNANOGUI_NANOGUI_H
+
+#include <osgNanoGUI/Export>
+
+#include <osg/Drawable>
+//#include <osg/StateSet>
+//#include <osg/StateAttribute>
+//#include <osg/Drawable>
+#include <osgViewer/ViewerEventHandlers>
+
+extern "C"
+{
+#include "nanovg.h"
+#ifdef OSG_GL3_AVAILABLE
+#define NANOVG_GL2_IMPLEMENTATION
+#elif defined OSG_GL2_AVAILABLE
+#define NANOVG_GL2_IMPLEMENTATION
+#elif defined OSG_GLES2_AVAILABLE
+#define NANOVG_GLES2_IMPLEMENTATION
+#elif defined OSG_GLES3_AVAILABLE
+#define NANOVG_GLES3_IMPLEMENTATION
+#endif
+#include "nanovg_gl.h"
+}
+
+//#include <nanogui/opengl.h>
+//#include <nanogui/glutil.h>
+//#include <nanogui/screen.h>
+#include <nanogui/window.h>
+#include <nanogui/theme.h>
+//#include <nanogui/layout.h>
+//#include <nanogui/label.h>
+//#include <nanogui/checkbox.h>
+//#include <nanogui/button.h>
+//#include <nanogui/toolbutton.h>
+//#include <nanogui/popupbutton.h>
+//#include <nanogui/combobox.h>
+//#include <nanogui/progressbar.h>
+//#include <nanogui/entypo.h>
+//#include <nanogui/messagedialog.h>
+//#include <nanogui/textbox.h>
+//#include <nanogui/slider.h>
+//#include <nanogui/imagepanel.h>
+//#include <nanogui/imageview.h>
+//#include <nanogui/vscrollpanel.h>
+//#include <nanogui/colorwheel.h>
+//#include <nanogui/graph.h>
+//#include <nanogui/tabwidget.h>
+
+
+
+//class NVGcontext;
+//typedef struct NVGcontext NVGcontext;
+
+//
+class OSGNANOGUI_EXPORT NanoGUIDrawCallback
+    :public osg::Drawable::DrawCallback
+{
+public:
+    NanoGUIDrawCallback() {}
+    virtual ~NanoGUIDrawCallback();
+
+    virtual bool init(NVGcontext* vg,nanogui::Widget* widget) = 0;
+    //virtual void draw(NVGcontext* vg, nanogui::Widget* widget, int width, int height) = 0;
+
+    void drawImplementation(osg::RenderInfo& renderInfo, const osg::Drawable* drawable) const override;
+
+    void resize(int w, int h)
+    {
+        windowWidth = w;
+        windowHeight = h;
+    }
+
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa)
+    {
+        ea_list.push_back(new osgGA::GUIEventAdapter(ea,osg::CopyOp::DEEP_COPY_ALL));
+        //aa_list.push_back(aa);
+
+        return false;
+    }
+
+//private:
+
+    void doEvent() const;
+
+    mutable  std::vector< osg::ref_ptr<osgGA::GUIEventAdapter> >  ea_list;
+    //std::vector< osg::ref_ptr<osgGA::GUIActionAdapter> > aa_list;
+
+
+
+    mutable  NVGcontext* vg = NULL;
+    mutable  nanogui::ref<nanogui::Widget> widget = NULL;
+
+    int windowWidth = 1280;
+    int windowHeight = 720;
+
+    bool inited = false;
+
+
+    mutable  nanogui::Vector2i mMousePos;
+    mutable int mMouseState = 0;
+    mutable int mModifiers = 0;
+
+
+};
+
+
+#endif//OSGNANOGUI_NANOGUI_H
+

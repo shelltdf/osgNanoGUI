@@ -1,0 +1,28 @@
+/* -*-c++-*- osgCEF - Copyright(C) 2010-2017 Wang Guanqun
+*
+* This module is licensed based on the GNU Lesser General Public License
+* version 2.1 ("LGPL"), which is located at:
+* http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+*/
+
+#ifndef OSGNANOGUI_EXPORT_H
+#define OSGNANOGUI_EXPORT_H
+
+//#if defined(_MSC_VER) && defined(OSG_DISABLE_MSVC_WARNINGS)
+//    #pragma warning( disable : 4786 )
+//#endif
+
+#if defined(_MSC_VER) || defined(__CYGWIN__) || defined(__MINGW32__) || defined( __BCPLUSPLUS__)  || defined( __MWERKS__)
+#if defined(NIUBI_LIBRARY_STATIC)
+#   define OSGNANOGUI_EXPORT
+#elif defined(OSGNANOGUI_LIBRARY)
+#   define OSGNANOGUI_EXPORT __declspec(dllexport)
+#else
+#   define OSGNANOGUI_EXPORT __declspec(dllimport)
+#endif
+#else
+#define OSGNANOGUI_EXPORT
+#endif
+
+
+#endif//OSGNANOGUI_EXPORT_H
